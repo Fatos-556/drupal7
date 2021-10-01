@@ -1,0 +1,6 @@
+name = myNewsBlock
+description = My informations modulé crée par Fatos comme block
+package = Fatos's Custom modules
+core = 7.x
+version = 7.x-0.1
+

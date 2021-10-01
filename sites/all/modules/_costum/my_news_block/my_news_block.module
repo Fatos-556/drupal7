@@ -1,0 +1,50 @@
+<?php
+function my_news_block_block_info(){
+$blocks =array();
+$blocks['my_news_block']['info'] = t('My News Block');
+  return $blocks;
+}
+
+function my_news_block_block_view($delta=''){
+$block = array();
+switch ($delta){
+  case 'my_news_block';
+  $block['subject'] = t('My News');
+  $block['content'] = my_news_block_list();
+  break;
+}
+return  $block;
+}
+
+function my_news_block_list()
+{
+
+  //  return t('Hello World');
+  $query = new EntityFieldQuery();
+  $query->entityCondition('entity_type', 'node')
+    ->entityCondition('bundle', 'news')
+    ->propertyCondition('status', NODE_PUBLISHED)
+    ->propertyOrderBy('created', 'DESC')
+    ->range(0, 5);
+
+  $result = $query->execute();
+
+
+  if (isset($result['node'])) {
+    $news_items_nids = array_keys($result['node']);
+    $news_items = entity_load('node', $news_items_nids);
+  }
+
+
+  $output = "<ul>\n";
+
+  foreach ((array)$news_items as $news_item)
+  {
+    $snippet = "<li><a href='/node/".$news_item->nid."'>".t($news_item->title)."</a></li>\n";
+    $output .= $snippet;
+  }
+  $output .= "</ul>\n";
+
+  return $output;
+}
+

@@ -1,0 +1,18 @@
+.signature_panel {
+  position: relative;
+  min-height: 50mm;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+.signature_panel img{
+  position: absolute;
+}
+.signature_panel canvas {
+  position: absolute;
+  border: 1px solid #eeeeee;
+  cursor: crosshair;
+  width: 100%;
+  min-height: 50mm;
+}

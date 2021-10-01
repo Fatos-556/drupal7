@@ -1,0 +1,14 @@
+name = Signature Widget
+description = Creates a widget for imagefield to upload multiple signature at once using html5 and display multiple images as draggable grid.
+package = Fields
+core = 7.x
+
+dependencies[] = image
+dependencies[] = libraries
+dependencies[] = multiupload_filefield_widget
+
+; Information added by Drupal.org packaging script on 2019-02-16
+version = "7.x-1.0"
+core = "7.x"
+project = "sign_widget"
+datestamp = "1550330287"

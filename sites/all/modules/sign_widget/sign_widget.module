@@ -1,0 +1,127 @@
+<?php
+
+/**
+ * @file
+ * Module implementing Nice ImageField Widget.
+ */
+
+module_load_include('inc', 'sign_widget', 'sign_widget.field');
+
+/**
+ * Implements hook_requirements().
+ *
+ * @param $phase
+ * @return array
+ */
+function sign_widget_requirements($phase) {
+  // Create an array to hold Nice ImageField Widget requirements.
+  $requirements = array();
+
+  // Check requirements during the runtime phase.
+  if ($phase == 'runtime') {
+    // Check if the Signature pad plugin library is installed.
+    if (($library = libraries_detect('signature_pad')) && !empty($library['installed'])) {
+      $requirements['sign_widget_library'] = array(
+        'title' => t('Signature pad plugin'),
+        'value' => t('Installed'),
+        'severity' => REQUIREMENT_OK,
+      );
+    }
+    else {
+      $requirements['sign_widget_library'] = array(
+        'title' => t('Signature pad plugin'),
+        'value' => t('Not installed'),
+        'description' => t('<em>Signature Widget</em> module requires <a href="@jquery_flip">Signature pad</a> plugin.', array(
+          '@jquery_flip' => $library['vendor url'],
+        )),
+        'severity' => REQUIREMENT_ERROR,
+      );
+    }
+  }
+
+  return $requirements;
+}
+
+/**
+ * Implements hook_libraries_info().
+ */
+function sign_widget_libraries_info() {
+  $libraries['signature_pad'] = array(
+    'name' => 'Signature Pad',
+    'vendor url' => 'https://github.com/szimek/signature_pad',
+    'download url' => 'https://www.jsdelivr.com/package/npm/signature_pad',
+    'version arguments' => array(
+      'file' => 'dist/signature_pad.umd.js',
+      'pattern' => '@Signature Pad v([0-9a-zA-Z\.-]+)@',
+      'lines' => 20,
+    ),
+    'files' => array(
+      'js' => array('dist/signature_pad.umd.js'),
+    ),
+    'integration files' => array(
+      'sign_widget' => array(
+        'js' => array('js/sign_widget.js'),
+        'css' => array('css/sign_widget.css'),
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+/**
+ * Implements hook_library().
+ */
+function sign_widget_library() {
+  $module_path = drupal_get_path('module', 'sign_widget');
+  $library_path = libraries_get_path('signature_pad');
+
+  $libraries['signature_pad'] = array(
+    'title' => 'Signature pad',
+    'website' => 'https://github.com/szimek/signature_pad',
+    'version' => '3.0',
+    'js' => array(
+      $library_path . '/dist/signature_pad.umd.js' => array(),
+      $module_path . '/js/sign_widget.js' => array(),
+    ),
+    'css' => array(
+      $module_path . '/css/sign_widget.css' => array(
+        'type' => 'file',
+        'media' => 'screen',
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Implements hook_theme().
+ */
+function sign_widget_theme() {
+  $default = array(
+    'render element' => 'element',
+    'file' => 'sign_widget.theme.inc',
+  );
+
+  return array(
+    'sign_widget_multiple' => $default,
+    'sign_widget_image' => $default,
+  );
+}
+
+/**
+ * Implements hook_image_default_styles().
+ */
+function sign_widget_image_default_styles() {
+  return array(
+    'signature_pad' => array(
+      'label' => 'Signature Image (288x180)',
+      'effects' => array(
+        array(
+          'name' => 'image_scale_and_crop',
+          'data' => array('width' => 288, 'height' => 180),
+        ),
+      ),
+    ),
+  );
+}
